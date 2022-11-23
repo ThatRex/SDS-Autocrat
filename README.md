@@ -4,45 +4,27 @@ A bot for the Team SDS discord server.
 
 # 🏗 Development
 
+If you haven't yet, [install yarn](https://yarnpkg.com/getting-started/install).
+```bash
+yarn
+yarn run dev
+yarn run watch # auto-reload
 ```
-npm install
-npm run dev
-```
-
-If you want to use [Nodemon](https://nodemon.io/) to auto-reload while in development:
-
-```
-npm run watch
-```
-
 # 💻 Production
 
 ```
-npm install --production
-npm run build
-npm run start
+yarn install --production
+yarn run build
+yarn run start
 ```
 
 # 🐋 Docker
 
-To start your application:
-
+```bash
+docker-compose up -d # start application
+docker-compose down  # shut down application
+docker-compose logs  # view application logs
 ```
-docker-compose up -d
-```
-
-To shut down your application:
-
-```
-docker-compose down
-```
-
-To view your application's logs:
-
-```
-docker-compose logs
-```
-
 For the full command list please view the [Docker Documentation](https://docs.docker.com/engine/reference/commandline/cli/).
 
 # 📖 Documentation
