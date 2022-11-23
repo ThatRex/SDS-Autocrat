@@ -30,5 +30,5 @@ For the full command list please view the [Docker Documentation](https://docs.do
 # 📖 Documentation
 
 -   [discordx](https://discordx.js.org)
--   [discord.js]()
--   [Prisma]([Prisma](https://www.prisma.io/docs))
+-   [discord.js](https://discord.js.org/#/docs)
+-   [Prisma](https://www.prisma.io/docs)
