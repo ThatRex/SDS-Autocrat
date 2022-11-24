@@ -1,17 +1,12 @@
 import { NotBot } from '@discordx/utilities'
-import {
-    CommandInteraction,
-    Role,
-    GuildMember,
-    GuildMemberRoleManager,
-    DiscordAPIError
-} from 'discord.js'
+import { CommandInteraction } from 'discord.js'
 import { Discord, Guard, Slash } from 'discordx'
+import { ErrorHandler } from '../guards/error.js'
 
 @Discord()
+@Guard(ErrorHandler, NotBot)
 export class ping {
     @Slash({ description: 'ping' })
-    @Guard(NotBot)
     async ping(interaction: CommandInteraction) {
         interaction.reply('pong')
     }

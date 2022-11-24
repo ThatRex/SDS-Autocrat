@@ -7,12 +7,25 @@ generator client {
 
 datasource db {
     provider = "sqlite"
-    url      = "file:database.db"
+    url      = "file:database/database.db"
 }
 
-model manageableRoles {
-    roleId String
+model guildConfig {
+    guildId     String @id
+    mutedRoleId String
+}
+
+model manageableRole {
+    roleId        String
     managerRoleId String
 
-    @@unique([roleId, managerRoleId])
+    @@id([roleId, managerRoleId])
+}
+
+model mutedMember {
+    userId      String
+    guildId     String
+    userRoleIds String
+
+    @@id([userId, guildId])
 }

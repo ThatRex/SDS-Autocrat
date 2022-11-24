@@ -11,12 +11,13 @@
         "start": "node build/main.js",
         "watch": "nodemon --exec ts-node-esm src/main.ts",
         "format": "prettier --write --plugin-search-dir=. .",
+        "lint": "eslint --fix --ext .js,.ts .",
         "prisma:studio": "prisma studio",
         "prisma:migrate-dev": "prisma migrate dev",
         "prisma:db-push": "prisma db push",
         "prisma:db-pull": "prisma db pull",
         "prisma:generate": "prisma generate",
-        "seed": "node prisma/seed.js"
+        "prepare": "husky install"
     },
     "dependencies": {
         "@discordx/importer": "^1.1.10",
@@ -31,6 +32,12 @@
     },
     "devDependencies": {
         "@types/node": "^18.7.14",
+        "@typescript-eslint/eslint-plugin": "^5.44.0",
+        "@typescript-eslint/parser": "^5.44.0",
+        "eslint": "^8.28.0",
+        "eslint-config-prettier": "^8.5.0",
+        "husky": "^8.0.2",
+        "lint-staged": "^13.0.3",
         "nodemon": "^2.0.19",
         "prettier": "^2.8.0",
         "ts-node": "^10.9.1",
@@ -39,5 +46,9 @@
     "engines": {
         "node": ">=16.0.0",
         "npm": ">=7.0.0"
+    },
+    "lint-staged": {
+        "*.{js,ts}": "eslint --cache --fix",
+        "*.{js,css,md}": "prettier --write"
     }
 }

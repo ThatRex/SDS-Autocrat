@@ -1,4 +1,3 @@
-import { NotBot } from '@discordx/utilities'
 import {
     CommandInteraction,
     Role,
@@ -9,15 +8,18 @@ import {
 import { ApplicationCommandOptionType } from 'discord.js'
 import { Discord, Guard, Slash, SlashGroup, SlashOption } from 'discordx'
 import { PrismaClient } from '@prisma/client'
+import { ErrorHandler } from '../guards/error.js'
+import { NotBot } from '@discordx/utilities'
+import { IsGuild } from '../guards/isGuild.js'
 
 const prisma = new PrismaClient()
 
 @Discord()
 @SlashGroup({ name: 'role', description: 'give or take a role' })
 @SlashGroup('role')
+@Guard(ErrorHandler, NotBot, IsGuild)
 export class role {
     @Slash({ description: 'give a role' })
-    @Guard(NotBot)
     async give(
         @SlashOption({
             name: 'member',
@@ -40,7 +42,6 @@ export class role {
         await roleManage(interaction, 'give', role, user)
     }
     @Slash({ description: 'take a role' })
-    @Guard(NotBot)
     async take(
         @SlashOption({
             name: 'member',
@@ -70,7 +71,7 @@ async function roleManage(
     role: Role,
     user: GuildMember
 ) {
-    const manageableRoles = await prisma.manageableRoles.findMany({
+    const manageableRoles = await prisma.manageableRole.findMany({
         where: { roleId: role.id },
         select: { managerRoleId: true }
     })
@@ -90,14 +91,14 @@ async function roleManage(
         )
     })
 
-    if (!canManageRole) return interaction.reply(`Sorry, you don't have permession to do that`)
+    if (!canManageRole) throw new Error(`Sorry, you don't have permession to do that`)
 
     try {
         action === 'give' ? await user.roles.add(role) : await user.roles.remove(role)
         interaction.reply(`Role, ${role} ${action === 'give' ? 'given to' : 'taken from'} ${user}`)
     } catch (err) {
         if (err instanceof DiscordAPIError)
-            return interaction.reply(
+            throw new Error(
                 err.code === 50001 ? `Sorry, I don't have permission to do that` : err.message
             )
     }

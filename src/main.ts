@@ -6,8 +6,11 @@ import { IntentsBitField } from 'discord.js'
 import { Client } from 'discordx'
 
 export const bot = new Client({
-    // To only use global commands (use @Guild for specific guild command), comment this line
-    botGuilds: [(client) => client.guilds.cache.map((guild) => guild.id)],
+    // This will only add new commands to existing guilds unless in production
+    // botGuilds:
+    //     process.env.NODE_ENV !== 'production'
+    //         ? ['559178010838958090'] // [(client) => client.guilds.cache.map((guild) => guild.id)]
+    //         : undefined,
     // Discord intents
     intents: [
         IntentsBitField.Flags.Guilds
@@ -32,7 +35,7 @@ bot.once('ready', async () => {
     // To clear all guild commands, uncomment this line,
     // This is useful when moving from guild commands to global commands
     // It must only be executed once
-    // await bot.clearApplicationCommands(...bot.guilds.cache.map((g) => g.id))
+    await bot.clearApplicationCommands(...bot.guilds.cache.map((g) => g.id))
     console.log('Bot started')
 })
 
