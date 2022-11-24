@@ -76,7 +76,7 @@ export class manageableRoles {
                 : [manageableRole.roleId]
         })
 
-        const embed = new EmbedBuilder().setColor('#d5152f').setTitle('Manageable Roles')
+        const embed = new EmbedBuilder().setColor('#d5152f').setTitle('Manager Roles')
 
         for (const manageableRole in manageableRoleParsed)
             embed.addFields({
@@ -114,7 +114,9 @@ export class manageableRoles {
                 interaction.member.permissions.has('Administrator')
             )
         )
-            return interaction.reply(`Sorry, you don't have permession to do that`)
+            throw new Error(`Sorry, you don't have permession to do that`)
+
+        if (role.id === managerRole.id) throw new Error(`Sorry, a role can't manage itself`)
 
         try {
             await prisma.manageableRole.create({
@@ -125,7 +127,7 @@ export class manageableRoles {
                 throw new Error(`${role} can already be managed by ${managerRole}`)
         }
 
-        interaction.reply(`${managerRole} can now managed ${role}`)
+        interaction.reply(`${managerRole} can now manage ${role}`)
     }
 
     @Slash({ description: 'remove a manageable role' })
