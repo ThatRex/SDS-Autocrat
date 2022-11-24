@@ -6,17 +6,13 @@ import {
     GuildMemberRoleManager,
     DiscordAPIError
 } from 'discord.js'
-import { ApplicationCommandOptionType } from 'discord.js'
-import { Discord, Guard, Slash, SlashGroup, SlashOption } from 'discordx'
-
+import { Discord, Guard, Slash } from 'discordx'
 
 @Discord()
 export class ping {
     @Slash({ description: 'ping' })
     @Guard(NotBot)
-    async ping(
-        interaction: CommandInteraction
-    ) {
+    async ping(interaction: CommandInteraction) {
         interaction.reply('pong')
     }
 }
