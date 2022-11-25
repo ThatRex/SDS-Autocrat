@@ -76,30 +76,32 @@ async function roleManage(
         select: { managerRoleId: true }
     })
 
-    const canManageRole = manageableRoles.some((manageableRole) => {
-        if (
-            !(
-                interaction.member &&
-                interaction.member instanceof GuildMember &&
-                interaction.member.roles instanceof GuildMemberRoleManager
-            )
-        )
-            return false
-        return (
+    let canManageRole = false
+
+    if (
+        interaction.member instanceof GuildMember &&
+        interaction.member.roles instanceof GuildMemberRoleManager
+    ) {
+        canManageRole =
             interaction.member.permissions.has('ManageRoles', true) ||
-            interaction.member.roles.cache.some((role) => role.id === manageableRole.managerRoleId)
-        )
-    })
+            manageableRoles.some((manageableRole) =>
+                (interaction.member as GuildMember).roles.cache.some(
+                    (role) => role.id === manageableRole.managerRoleId
+                )
+            )
+    }
 
     if (!canManageRole) throw new Error(`Sorry, you don't have permession to do that`)
 
     try {
         action === 'give' ? await user.roles.add(role) : await user.roles.remove(role)
-        interaction.reply(`Role, ${role} ${action === 'give' ? 'given to' : 'taken from'} ${user}`)
+        return interaction.reply(
+            `Role, ${role} ${action === 'give' ? 'given to' : 'taken from'} ${user}`
+        )
     } catch (err) {
         if (err instanceof DiscordAPIError)
             throw new Error(
-                err.code === 50001 ? `Sorry, I don't have permission to do that` : err.message
+                err.code in [50001, 50013] ? `Sorry, I don't have permission to do that` : err.message
             )
     }
 }
