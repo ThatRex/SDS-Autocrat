@@ -32,19 +32,14 @@ export class role {
 
         interaction: CommandInteraction
     ) {
-        if (
-            !(
-                interaction.guild &&
-                interaction.member instanceof GuildMember &&
-                interaction.member.permissions.has('ModerateMembers', true)
-            )
-        )
+        const member = interaction.member as GuildMember
+        if (!member.permissions.has('ModerateMembers', true))
             return interaction.reply(`Sorry, you don't have permession to do that`)
 
         await prisma.guildConfig.upsert({
-            where: { guildId: interaction.guild.id },
+            where: { guildId: interaction.guild!.id },
             update: { mutedRoleId: role.id },
-            create: { guildId: interaction.guild.id, mutedRoleId: role.id }
+            create: { guildId: interaction.guild!.id, mutedRoleId: role.id }
         })
 
         interaction.reply(`Muted role set to ${role}`)
