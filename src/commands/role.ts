@@ -101,7 +101,9 @@ async function roleManage(
     } catch (err) {
         if (err instanceof DiscordAPIError)
             throw new Error(
-                err.code in [50001, 50013] ? `Sorry, I don't have permission to do that` : err.message
+                err.code in [50001, 50013]
+                    ? `Sorry, I don't have permission to do that`
+                    : err.message
             )
     }
 }

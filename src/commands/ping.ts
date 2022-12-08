@@ -7,7 +7,7 @@ import { ErrorHandler } from '../guards/error.js'
 @Guard(ErrorHandler, NotBot)
 export class ping {
     @Slash({ description: 'ping' })
-    async ping(interaction: CommandInteraction) {
+    ping(interaction: CommandInteraction) {
         interaction.reply('pong')
     }
 }
