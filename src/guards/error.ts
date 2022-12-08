@@ -1,5 +1,5 @@
-import type { GuardFunction } from 'discordx'
-import type { CommandInteraction } from 'discord.js'
+import { GuardFunction } from 'discordx'
+import { CommandInteraction, DiscordAPIError } from 'discord.js'
 
 export const ErrorHandler: GuardFunction<CommandInteraction> = async (
     interaction,
@@ -9,8 +9,15 @@ export const ErrorHandler: GuardFunction<CommandInteraction> = async (
     try {
         await next()
     } catch (err) {
-        if (err instanceof Error) return interaction.reply(err.message)
-        console.error(err)
-        interaction.reply('unknown error')
+        let errorMessage = 'unknown error'
+
+        if (err instanceof DiscordAPIError) {
+            errorMessage = [50001, 50013].some((val) => val === (err as DiscordAPIError).code)
+                ? `Sorry, I don't have permission to do that`
+                : err.message
+        } else if (err instanceof Error) errorMessage = err.message
+
+        console.error(errorMessage)
+        interaction.reply(errorMessage)
     }
 }

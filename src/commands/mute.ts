@@ -1,4 +1,4 @@
-import { CommandInteraction, GuildMember, DiscordAPIError } from 'discord.js'
+import { CommandInteraction, GuildMember } from 'discord.js'
 import { ApplicationCommandOptionType } from 'discord.js'
 import { Discord, Guard, Slash, SlashOption } from 'discordx'
 import { PrismaClient } from '@prisma/client'
@@ -59,14 +59,7 @@ export class mute {
             update: data
         })
 
-        try {
-            await user.roles.set([mutedRoleId])
-        } catch (err) {
-            if (err instanceof DiscordAPIError)
-                return interaction.reply(
-                    err.code === 50001 ? `Sorry, I don't have permission to do that` : err.message
-                )
-        }
+        await user.roles.set([mutedRoleId])
         interaction.reply(`${user} is now muted`)
     }
 }
@@ -109,15 +102,7 @@ export class unmute {
         })
 
         const mutedMemberRoles = mutedMember ? mutedMember.userRoleIds.split(';') : []
-
-        try {
-            await user.roles.set(mutedMemberRoles)
-        } catch (err) {
-            if (err instanceof DiscordAPIError)
-                throw new Error(
-                    err.code === 50001 ? `Sorry, I don't have permission to do that` : err.message
-                )
-        }
+        await user.roles.set(mutedMemberRoles)
         interaction.reply(`${user} is now unmuted`)
     }
 }

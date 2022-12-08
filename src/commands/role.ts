@@ -2,8 +2,7 @@ import {
     CommandInteraction,
     Role,
     GuildMember,
-    GuildMemberRoleManager,
-    DiscordAPIError
+    GuildMemberRoleManager
 } from 'discord.js'
 import { ApplicationCommandOptionType } from 'discord.js'
 import { Discord, Guard, Slash, SlashGroup, SlashOption } from 'discordx'
@@ -93,17 +92,8 @@ async function roleManage(
 
     if (!canManageRole) throw new Error(`Sorry, you don't have permession to do that`)
 
-    try {
-        action === 'give' ? await user.roles.add(role) : await user.roles.remove(role)
-        return interaction.reply(
-            `Role, ${role} ${action === 'give' ? 'given to' : 'taken from'} ${user}`
-        )
-    } catch (err) {
-        if (err instanceof DiscordAPIError)
-            throw new Error(
-                err.code in [50001, 50013]
-                    ? `Sorry, I don't have permission to do that`
-                    : err.message
-            )
-    }
+    action === 'give' ? await user.roles.add(role) : await user.roles.remove(role)
+    return interaction.reply(
+        `Role, ${role} ${action === 'give' ? 'given to' : 'taken from'} ${user}`
+    )
 }

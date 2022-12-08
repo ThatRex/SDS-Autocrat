@@ -1,7 +1,6 @@
 import {
     ApplicationCommandOptionType,
     CommandInteraction,
-    DiscordAPIError,
     GuildChannel,
     GuildMember
 } from 'discord.js'
@@ -40,15 +39,7 @@ export class Move {
         if (!channelTo.isVoiceBased()) throw new Error('Channel must be a voice channel')
 
         const membersToMove = channelFrom.members
-
-        try {
-            for (const [, member] of membersToMove) await member.voice.setChannel(channelTo)
-        } catch (err) {
-            if (err instanceof DiscordAPIError)
-                return interaction.reply(
-                    err.code === 50013 ? `Sorry, I don't have permission to do that` : err.message
-                )
-        }
+        for (const [, member] of membersToMove) await member.voice.setChannel(channelTo)
 
         interaction.reply(`Moved membvers from ${channelFrom} to ${channelTo}`)
     }
