@@ -7,10 +7,10 @@ import { Client } from 'discordx'
 
 export const bot = new Client({
     // This will only add new commands to existing guilds unless in production
-    // botGuilds:
-    //     process.env.NODE_ENV !== 'production'
-    //         ? ['559178010838958090'] // [(client) => client.guilds.cache.map((guild) => guild.id)]
-    //         : undefined,
+    botGuilds:
+        process.env.NODE_ENV !== 'production'
+            ? ['559178010838958090'] // [(client) => client.guilds.cache.map((guild) => guild.id)]
+            : undefined,
     // Discord intents
     intents: [
         IntentsBitField.Flags.Guilds
@@ -35,7 +35,7 @@ bot.once('ready', async () => {
     // To clear all guild commands, uncomment this line,
     // This is useful when moving from guild commands to global commands
     // It must only be executed once
-    await bot.clearApplicationCommands(...bot.guilds.cache.map((g) => g.id))
+    // await bot.clearApplicationCommands(...bot.guilds.cache.map((g) => g.id))
     console.log('Bot started')
 })
 
@@ -52,8 +52,6 @@ process.on('unhandledRejection', (error) => {
 })
 
 async function run() {
-    // The following syntax should be used in the commonjs environment
-    // await importx(__dirname + "/{events,commands}/**/*.{ts,js}");
     // The following syntax should be used in the ECMAScript environment
     await importx(dirname(import.meta.url) + '/{events,commands}/**/*.{ts,js}')
     // Let's start the bot
