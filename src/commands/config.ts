@@ -108,12 +108,8 @@ export class manageableRoles {
 
         interaction: CommandInteraction
     ) {
-        if (
-            !(
-                interaction.member instanceof GuildMember &&
-                interaction.member.permissions.has('Administrator')
-            )
-        )
+        const member = interaction.member as GuildMember
+        if (!member.permissions.has('Administrator'))
             throw new Error(`Sorry, you don't have permession to do that`)
 
         if (role.id === managerRole.id) throw new Error(`Sorry, a role can't manage itself`)
@@ -149,12 +145,9 @@ export class manageableRoles {
 
         interaction: CommandInteraction
     ) {
-        if (
-            !(
-                interaction.member instanceof GuildMember &&
-                interaction.member.permissions.has('Administrator')
-            )
-        )
+        const member = interaction.member as GuildMember
+
+        if (!member.permissions.has('Administrator'))
             return interaction.reply(`Sorry, you don't have permession to do that`)
 
         try {
