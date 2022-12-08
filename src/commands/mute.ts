@@ -23,19 +23,15 @@ export class mute {
 
         interaction: CommandInteraction
     ) {
-        if (
-            !(
-                interaction.guild &&
-                interaction.member instanceof GuildMember &&
-                interaction.member.permissions.has('ModerateMembers', true)
-            )
-        )
+        const member = interaction.member as GuildMember
+
+        if (!member.permissions.has('ModerateMembers', true))
             throw new Error(`Sorry, you don't have permession to do that`)
-        if (interaction.member.id === user.id) throw new Error(`Sorry, you can't mute yourself`)
-        if (interaction.member.id === interaction.client.user.id) throw new Error(`Lol, nice try`)
+        if (member.id === user.id) throw new Error(`Sorry, you can't mute yourself`)
+        if (member.id === interaction.client.user.id) throw new Error(`Lol, nice try`)
 
         const guildConfig = await prisma.guildConfig.findUnique({
-            where: { guildId: interaction.guild.id }
+            where: { guildId: interaction.guild!.id }
         })
         const mutedRoleId = guildConfig?.mutedRoleId ?? undefined
 
@@ -48,22 +44,19 @@ export class mute {
             userRoles.push(role.id)
         })
 
-        const guildId = interaction.guild.id
+        const guildId = interaction.guild!.id
         const userId = interaction.user.id
+        const data = {
+            guildId,
+            userId,
+            userRoleIds: userRoles.join(';')
+        }
         await prisma.mutedMember.upsert({
             where: {
                 userId_guildId: { guildId, userId }
             },
-            create: {
-                guildId,
-                userId,
-                userRoleIds: userRoles.join(';')
-            },
-            update: {
-                guildId,
-                userId,
-                userRoleIds: userRoles.join(';')
-            }
+            create: data,
+            update: data
         })
 
         try {
@@ -93,15 +86,11 @@ export class unmute {
 
         interaction: CommandInteraction
     ) {
-        if (
-            !(
-                interaction.member instanceof GuildMember &&
-                interaction.member.permissions.has('ModerateMembers', true)
-            )
-        )
+        const member = interaction.member as GuildMember
+        if (!member.permissions.has('ModerateMembers', true))
             throw new Error(`Sorry, you don't have permession to do that`)
-        if (interaction.member.id === user.id) throw new Error(`Sorry, you can't mute yourself`)
-        if (interaction.member.id === interaction.client.user.id) throw new Error(`Lol, nice try`)
+        if (member.id === user.id) throw new Error(`Sorry, you can't mute yourself`)
+        if (member.id === interaction.client.user.id) throw new Error(`Lol, nice try`)
 
         const guildConfig = await prisma.guildConfig.findUnique({
             where: { guildId: interaction.guild!.id }
