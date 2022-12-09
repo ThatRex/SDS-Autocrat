@@ -36,8 +36,6 @@ export class role {
 
         interaction: CommandInteraction
     ) {
-        const member = interaction.member as GuildMember
-
         await prisma.guildConfig.upsert({
             where: { guildId: interaction.guild!.id },
             update: { mutedRoleId: role.id },
