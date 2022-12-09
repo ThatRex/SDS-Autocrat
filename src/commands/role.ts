@@ -65,25 +65,19 @@ async function roleManage(
     role: Role,
     user: GuildMember
 ) {
+    const member = interaction.member as GuildMember
     const manageableRoles = await prisma.manageableRole.findMany({
         where: { roleId: role.id },
         select: { managerRoleId: true }
     })
 
-    let canManageRole = false
-
-    if (
-        interaction.member instanceof GuildMember &&
-        interaction.member.roles instanceof GuildMemberRoleManager
-    ) {
-        canManageRole =
-            interaction.member.permissions.has('ManageRoles', true) ||
-            manageableRoles.some((manageableRole) =>
-                (interaction.member as GuildMember).roles.cache.some(
-                    (role) => role.id === manageableRole.managerRoleId
-                )
+    const canManageRole =
+        member.permissions.has('ManageRoles', true) ||
+        manageableRoles.some((manageableRole) =>
+            (interaction.member as GuildMember).roles.cache.some(
+                (role) => role.id === manageableRole.managerRoleId
             )
-    }
+        )
 
     if (!canManageRole) throw Error(`Sorry, you don't have permession to do that`)
 
