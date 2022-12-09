@@ -4,14 +4,17 @@ import { Discord, Guard, Slash, SlashOption } from 'discordx'
 import { PrismaClient } from '@prisma/client'
 import { NotBot } from '@discordx/utilities'
 import { ErrorHandler } from '../guards/error.js'
-import { IsGuild } from '../guards/isGuild.js'
 
 const prisma = new PrismaClient()
 
 @Discord()
-@Guard(ErrorHandler, NotBot, IsGuild)
+@Guard(ErrorHandler, NotBot)
 export class mute {
-    @Slash({ description: 'mute a member' })
+    @Slash({
+        description: 'mute a member',
+        dmPermission: false,
+        defaultMemberPermissions: ['ModerateMembers']
+    })
     async mute(
         @SlashOption({
             name: 'member',
@@ -25,19 +28,17 @@ export class mute {
     ) {
         const member = interaction.member as GuildMember
 
-        if (!member.permissions.has('ModerateMembers', true))
-            throw new Error(`Sorry, you don't have permession to do that`)
-        if (member.id === user.id) throw new Error(`Sorry, you can't mute yourself`)
-        if (member.id === interaction.client.user.id) throw new Error(`Lol, nice try`)
+        if (member.id === user.id) throw Error(`Sorry, you can't mute yourself`)
+        if (member.id === interaction.client.user.id) throw Error(`Lol, nice try`)
 
         const guildConfig = await prisma.guildConfig.findUnique({
             where: { guildId: interaction.guild!.id }
         })
         const mutedRoleId = guildConfig?.mutedRoleId ?? undefined
 
-        if (!mutedRoleId) throw new Error(`This server has no muted role set`)
+        if (!mutedRoleId) throw Error(`This server has no muted role set`)
         if (user.roles.cache.some((role) => role.id === mutedRoleId))
-            throw new Error(`Member is already muted`)
+            throw Error(`Member is already muted`)
 
         const userRoles: string[] = []
         user.roles.cache.forEach((role) => {
@@ -65,9 +66,13 @@ export class mute {
 }
 
 @Discord()
-@Guard(ErrorHandler, NotBot, IsGuild)
+@Guard(ErrorHandler, NotBot)
 export class unmute {
-    @Slash({ description: 'unmute a member' })
+    @Slash({
+        description: 'unmute a member',
+        dmPermission: false,
+        defaultMemberPermissions: ['ModerateMembers']
+    })
     async unmute(
         @SlashOption({
             name: 'member',
@@ -80,19 +85,18 @@ export class unmute {
         interaction: CommandInteraction
     ) {
         const member = interaction.member as GuildMember
-        if (!member.permissions.has('ModerateMembers', true))
-            throw new Error(`Sorry, you don't have permession to do that`)
-        if (member.id === user.id) throw new Error(`Sorry, you can't mute yourself`)
-        if (member.id === interaction.client.user.id) throw new Error(`Lol, nice try`)
+
+        if (member.id === user.id) throw Error(`Sorry, you can't mute yourself`)
+        if (member.id === interaction.client.user.id) throw Error(`Lol, nice try`)
 
         const guildConfig = await prisma.guildConfig.findUnique({
             where: { guildId: interaction.guild!.id }
         })
         const mutedRoleId = guildConfig?.mutedRoleId ?? undefined
 
-        if (!mutedRoleId) throw new Error(`This server has no muted role set`)
+        if (!mutedRoleId) throw Error(`This server has no muted role set`)
         if (!user.roles.cache.some((role) => role.id === mutedRoleId))
-            throw new Error(`Member is not muted`)
+            throw Error(`Member is not muted`)
 
         const guildId = interaction.guild!.id
         const userId = interaction.user.id

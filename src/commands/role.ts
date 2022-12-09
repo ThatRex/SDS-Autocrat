@@ -1,9 +1,4 @@
-import {
-    CommandInteraction,
-    Role,
-    GuildMember,
-    GuildMemberRoleManager
-} from 'discord.js'
+import { CommandInteraction, Role, GuildMember, GuildMemberRoleManager } from 'discord.js'
 import { ApplicationCommandOptionType } from 'discord.js'
 import { Discord, Guard, Slash, SlashGroup, SlashOption } from 'discordx'
 import { PrismaClient } from '@prisma/client'
@@ -90,7 +85,7 @@ async function roleManage(
             )
     }
 
-    if (!canManageRole) throw new Error(`Sorry, you don't have permession to do that`)
+    if (!canManageRole) throw Error(`Sorry, you don't have permession to do that`)
 
     action === 'give' ? await user.roles.add(role) : await user.roles.remove(role)
     return interaction.reply(

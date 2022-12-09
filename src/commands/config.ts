@@ -4,21 +4,25 @@ import { Discord, Guard, Slash, SlashGroup, SlashOption } from 'discordx'
 import { PrismaClient } from '@prisma/client'
 import { ErrorHandler } from '../guards/error.js'
 import { NotBot } from '@discordx/utilities'
-import { IsGuild } from '../guards/isGuild.js'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/index.js'
 
 const prisma = new PrismaClient()
 
 @Discord()
-@SlashGroup({ name: 'config', description: 'configure me' })
+@SlashGroup({
+    name: 'config',
+    description: 'configure me',
+    dmPermission: false,
+    defaultMemberPermissions: ['Administrator']
+})
 @SlashGroup('config')
-@Guard(ErrorHandler, NotBot, IsGuild)
+@Guard(ErrorHandler, NotBot)
 export class config {}
 
 @Discord()
 @SlashGroup({ name: 'mute', description: 'configure me', root: 'config' })
 @SlashGroup('mute', 'config')
-@Guard(ErrorHandler, NotBot, IsGuild)
+@Guard(ErrorHandler, NotBot)
 export class role {
     @Slash({ description: 'configure muted role' })
     async role(
@@ -33,8 +37,6 @@ export class role {
         interaction: CommandInteraction
     ) {
         const member = interaction.member as GuildMember
-        if (!member.permissions.has('ModerateMembers', true))
-            return interaction.reply(`Sorry, you don't have permession to do that`)
 
         await prisma.guildConfig.upsert({
             where: { guildId: interaction.guild!.id },
@@ -47,9 +49,13 @@ export class role {
 }
 
 @Discord()
-@SlashGroup({ name: 'manageable-roles', description: 'configure manageable roles', root: 'config' })
+@SlashGroup({
+    name: 'manageable-roles',
+    description: 'configure manageable roles',
+    root: 'config'
+})
 @SlashGroup('manageable-roles', 'config')
-@Guard(ErrorHandler, NotBot, IsGuild)
+@Guard(ErrorHandler, NotBot)
 export class manageableRoles {
     @Slash({ description: 'list all manageable roles' })
     async list(interaction: CommandInteraction) {
@@ -105,9 +111,9 @@ export class manageableRoles {
     ) {
         const member = interaction.member as GuildMember
         if (!member.permissions.has('Administrator'))
-            throw new Error(`Sorry, you don't have permession to do that`)
+            throw Error(`Sorry, you don't have permession to do that`)
 
-        if (role.id === managerRole.id) throw new Error(`Sorry, a role can't manage itself`)
+        if (role.id === managerRole.id) throw Error(`Sorry, a role can't manage itself`)
 
         try {
             await prisma.manageableRole.create({
@@ -115,7 +121,7 @@ export class manageableRoles {
             })
         } catch (err) {
             if (err instanceof PrismaClientKnownRequestError && err.code === 'P2002')
-                throw new Error(`${role} can already be managed by ${managerRole}`)
+                throw Error(`${role} can already be managed by ${managerRole}`)
         }
 
         interaction.reply(`${managerRole} can now manage ${role}`)
@@ -151,7 +157,7 @@ export class manageableRoles {
             })
         } catch (err) {
             if (err instanceof PrismaClientKnownRequestError && err.code === 'P2002')
-                throw new Error(`${role} is not manageable by ${managerRole}`)
+                throw Error(`${role} is not manageable by ${managerRole}`)
         }
 
         interaction.reply(`${managerRole} can no longer manage ${role}`)
