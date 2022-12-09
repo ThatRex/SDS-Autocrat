@@ -1,46 +1,52 @@
 import {
     ApplicationCommandOptionType,
+    BaseGuildVoiceChannel,
+    ChannelType,
     CommandInteraction,
-    GuildChannel,
     GuildMember
 } from 'discord.js'
 import { Discord, Slash, SlashOption, Guard } from 'discordx'
 import { NotBot } from '@discordx/utilities'
 import { ErrorHandler } from '../guards/error.js'
-import { IsGuild } from '../guards/isGuild.js'
 
 @Discord()
-@Guard(ErrorHandler, NotBot, IsGuild)
+@Guard(ErrorHandler, NotBot)
 export class Move {
     @Slash({
         description: 'move everyone from the channel you are in to another channel',
-        name: 'move'
+        name: 'move',
+        dmPermission: false,
+        defaultMemberPermissions: ['MoveMembers']
     })
     async move(
         @SlashOption({
             description: 'voice channel to move to',
             name: 'voice-channel',
             required: true,
-            type: ApplicationCommandOptionType.Channel
+            type: ApplicationCommandOptionType.Channel,
+            channelTypes: [ChannelType.GuildVoice]
         })
-        channelTo: GuildChannel,
+        channelTo: BaseGuildVoiceChannel,
 
         interaction: CommandInteraction
     ) {
+        await interaction.deferReply()
+
         const member = interaction.member as GuildMember
-        if (!member.permissions.has('MoveMembers'))
-            throw new Error("Sorry, you don't have permession to do that")
-
         const channelFrom = member.voice.channel
-        if (channelFrom === channelTo)
-            throw new Error('You cant be moved to a channel you are already in')
+
         if (!channelFrom || !channelFrom.isVoiceBased())
-            throw new Error('You are not in a voice channel')
-        if (!channelTo.isVoiceBased()) throw new Error('Channel must be a voice channel')
+            throw Error('You are not in a voice channel')
+        if (channelTo === channelFrom)
+            throw Error(`You cant be moved to a channel you are already in`)
+        if (!channelTo.isVoiceBased()) throw Error('Channel must be a voice channel')
 
-        const membersToMove = channelFrom.members
-        for (const [, member] of membersToMove) await member.voice.setChannel(channelTo)
+        await Promise.all(
+            Array.from(channelFrom.members.values()).map((member) =>
+                member.voice.setChannel(channelTo)
+            )
+        )
 
-        interaction.reply(`Moved membvers from ${channelFrom} to ${channelTo}`)
+        interaction.editReply(`Moved members from ${channelFrom} to ${channelTo}`)
     }
 }
