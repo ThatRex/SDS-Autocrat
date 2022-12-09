@@ -47,6 +47,6 @@ export class Move {
             )
         )
 
-        interaction.editReply(`Moved members from ${channelFrom} to ${channelTo}`)
+        await interaction.editReply(`Moved members from ${channelFrom} to ${channelTo}`)
     }
 }
