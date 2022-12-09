@@ -7,20 +7,20 @@ import { Client } from 'discordx'
 
 export const bot = new Client({
     // This will only add new commands to existing guilds unless in production
-    botGuilds:
-        process.env.NODE_ENV !== 'production'
-            ? ['559178010838958090'] // [(client) => client.guilds.cache.map((guild) => guild.id)]
-            : undefined,
+    // botGuilds:
+    //     process.env.NODE_ENV !== 'production'
+    //         ? ['559178010838958090'] // [(client) => client.guilds.cache.map((guild) => guild.id)]
+    //         : undefined,
     // Discord intents
     intents: [
-        IntentsBitField.Flags.Guilds
-        // IntentsBitField.Flags.GuildMembers,
+        IntentsBitField.Flags.Guilds,
+        // IntentsBitField.Flags.GuildMembers
         // IntentsBitField.Flags.GuildMessages,
         // IntentsBitField.Flags.GuildMessageReactions,
-        // IntentsBitField.Flags.GuildVoiceStates,
+        IntentsBitField.Flags.GuildVoiceStates
     ],
     // Debug logs are disabled in silent mode
-    silent: false
+    silent: process.env.NODE_ENV === 'production'
     // Configuration for @SimpleCommand
     // simpleCommand: {
     //   prefix: "s!",
@@ -55,9 +55,7 @@ async function run() {
     // The following syntax should be used in the ECMAScript environment
     await importx(dirname(import.meta.url) + '/{events,commands}/**/*.{ts,js}')
     // Let's start the bot
-    if (!process.env.BOT_TOKEN) {
-        throw Error('Could not find BOT_TOKEN in your environment')
-    }
+    if (!process.env.BOT_TOKEN) throw Error('Could not find BOT_TOKEN in your environment')
     // Log in with your bot token
     await bot.login(process.env.BOT_TOKEN)
 }
