@@ -1,4 +1,4 @@
-import { CommandInteraction, Role, GuildMember, GuildMemberRoleManager } from 'discord.js'
+import { CommandInteraction, Role, GuildMember } from 'discord.js'
 import { ApplicationCommandOptionType } from 'discord.js'
 import { Discord, Guard, Slash, SlashGroup, SlashOption } from 'discordx'
 import { PrismaClient } from '@prisma/client'
