@@ -73,7 +73,7 @@ async function roleManage(
 
     const canManageRole =
         member.permissions.has('ManageRoles', true) ||
-        manageableRoles.some((manageableRole) =>
+        manageableRoles.some((manageableRole: { [key: string]: string }) =>
             (interaction.member as GuildMember).roles.cache.some(
                 (role) => role.id === manageableRole.managerRoleId
             )

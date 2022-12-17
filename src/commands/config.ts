@@ -68,7 +68,7 @@ export class manageableRoles {
             return interaction.reply('No manageable roles on this server')
 
         const manageableRoleParsed: { [key: string]: string[] } = {}
-        manageableRoles.forEach((manageableRole) => {
+        manageableRoles.forEach((manageableRole: { [key: string]: string }) => {
             const role = manageableRole.managerRoleId
             manageableRoleParsed[role] = Object.hasOwn(manageableRoleParsed, role)
                 ? [...manageableRoleParsed[role], manageableRole.roleId]
