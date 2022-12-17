@@ -1,24 +1,25 @@
 ## build runner
-FROM node:lts-alpine as build-runner
+FROM node:lts-alpine3.16 as build-runner
 
 # Set temp directory
 WORKDIR /tmp/app
 
-# Move package.json
+# Move package.json & yarn.lock
 COPY package.json .
+COPY yarn.lock .
 
 # Install dependencies
-RUN npm install
+RUN yarn
 
 # Move source files
 COPY src ./src
-COPY tsconfig.json   .
+COPY tsconfig.json .
 
 # Build project
-RUN npm run build
+RUN yarn run build
 
 ## producation runner
-FROM node:lts-alpine as prod-runner
+FROM node:lts-alpine3.16 as prod-runner
 
 # Set work directory
 WORKDIR /app
@@ -27,10 +28,17 @@ WORKDIR /app
 COPY --from=build-runner /tmp/app/package.json /app/package.json
 
 # Install dependencies
-RUN npm install --only=production
+RUN yarn install --production
 
 # Move build files
 COPY --from=build-runner /tmp/app/build /app/build
 
+# Move source files
+COPY prisma ./prisma
+COPY .env .
+
+# Generate prisma client
+RUN yarn run prisma generate
+
 # Start bot
-CMD [ "npm", "run", "start" ]
+CMD [ "yarn", "run", "start" ]
