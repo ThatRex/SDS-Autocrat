@@ -7,10 +7,10 @@ import { Client } from 'discordx'
 
 export const bot = new Client({
     // This will only add new commands to existing guilds unless in production
-    // botGuilds:
-    //     process.env.NODE_ENV !== 'production'
-    //         ? ['559178010838958090'] // [(client) => client.guilds.cache.map((guild) => guild.id)]
-    //         : undefined,
+    botGuilds:
+        process.env.NODE_ENV !== 'production'
+            ? ['559178010838958090'] // [(client) => client.guilds.cache.map((guild) => guild.id)]
+            : undefined,
     // Discord intents
     intents: [
         IntentsBitField.Flags.Guilds,
