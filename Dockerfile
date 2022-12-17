@@ -35,7 +35,6 @@ COPY --from=build-runner /tmp/app/build /app/build
 
 # Move source files
 COPY prisma ./prisma
-COPY .env .
 
 # Generate prisma client
 RUN yarn run prisma generate
