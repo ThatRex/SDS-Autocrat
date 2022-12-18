@@ -9,7 +9,7 @@ import { IsGuild } from '../guards/isGuild.js'
 const prisma = new PrismaClient()
 
 @Discord()
-@SlashGroup({ name: 'role', description: 'give or take a role' })
+@SlashGroup({ name: 'role', description: 'give or take a role', dmPermission: false })
 @SlashGroup('role')
 @Guard(ErrorHandler, NotBot, IsGuild)
 export class role {
