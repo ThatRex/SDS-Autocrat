@@ -3,6 +3,7 @@ services:
     app:
         build: .
         command: node build/main.js
+        restart: always
         env_file:
             - .env
         environment:
