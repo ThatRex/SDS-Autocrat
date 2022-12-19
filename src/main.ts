@@ -14,13 +14,13 @@ export const bot = new Client({
     // Discord intents
     intents: [
         IntentsBitField.Flags.Guilds,
-        // IntentsBitField.Flags.GuildMembers
+        // IntentsBitField.Flags.GuildMembers,
         // IntentsBitField.Flags.GuildMessages,
         // IntentsBitField.Flags.GuildMessageReactions,
         IntentsBitField.Flags.GuildVoiceStates
     ],
     // Debug logs are disabled in silent mode
-    silent: process.env.NODE_ENV === 'production'
+    silent: false // process.env.NODE_ENV === 'production'
     // Configuration for @SimpleCommand
     // simpleCommand: {
     //   prefix: "s!",
@@ -35,7 +35,7 @@ bot.once('ready', async () => {
     // To clear all guild commands, uncomment this line,
     // This is useful when moving from guild commands to global commands
     // It must only be executed once
-    await bot.clearApplicationCommands(...bot.guilds.cache.map((g) => g.id))
+    // await bot.clearApplicationCommands(...bot.guilds.cache.map((g) => g.id))
     console.log('Bot started')
 })
 
