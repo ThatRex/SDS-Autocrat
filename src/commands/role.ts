@@ -63,11 +63,16 @@ export class role {
     ) {
         await roleManage(interaction, 'take', role, user)
     }
+}
 
+@Discord()
+@Guard(ErrorHandler, NotBot, IsGuild)
+export class roleContext {
     @ContextMenu({
         name: 'Toggle Calls Approved',
         type: ApplicationCommandType.User,
-        dmPermission: false
+        dmPermission: false,
+        guilds: ['953475156309856256']
     })
     async userHandler(interaction: UserContextMenuCommandInteraction) {
         const role = interaction.guild!.roles.cache.get('1036651254211936256')
