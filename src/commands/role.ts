@@ -102,7 +102,7 @@ async function roleManage(
             )
         )
 
-    if (!canManageRole) throw Error(`Sorry, you don't have permession to do that`)
+    if (!canManageRole) throw Error(`Sorry, you don't have permission to do that`)
 
     if (action === 'toggle')
         action = (await user.roles.cache.some((memberRole) => memberRole.id === role.id))
