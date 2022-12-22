@@ -19,32 +19,32 @@ const prisma = new PrismaClient()
 @Guard(ErrorHandler, NotBot)
 export class config {}
 
-@Discord()
-@SlashGroup({ name: 'mute', description: 'configure me', root: 'config' })
-@SlashGroup('mute', 'config')
-@Guard(ErrorHandler, NotBot)
-export class role {
-    @Slash({ description: 'configure muted role' })
-    async role(
-        @SlashOption({
-            name: 'role',
-            description: 'role',
-            required: true,
-            type: ApplicationCommandOptionType.Role
-        })
-        role: Role,
+// @Discord()
+// @SlashGroup({ name: 'mute', description: 'configure me', root: 'config' })
+// @SlashGroup('mute', 'config')
+// @Guard(ErrorHandler, NotBot)
+// export class role {
+//     @Slash({ description: 'configure muted role' })
+//     async role(
+//         @SlashOption({
+//             name: 'role',
+//             description: 'role',
+//             required: true,
+//             type: ApplicationCommandOptionType.Role
+//         })
+//         role: Role,
 
-        interaction: CommandInteraction
-    ) {
-        await prisma.guildConfig.upsert({
-            where: { guildId: interaction.guild!.id },
-            update: { mutedRoleId: role.id },
-            create: { guildId: interaction.guild!.id, mutedRoleId: role.id }
-        })
+//         interaction: CommandInteraction
+//     ) {
+//         await prisma.guildConfig.upsert({
+//             where: { guildId: interaction.guild!.id },
+//             update: { mutedRoleId: role.id },
+//             create: { guildId: interaction.guild!.id, mutedRoleId: role.id }
+//         })
 
-        interaction.reply(`Muted role set to ${role}`)
-    }
-}
+//         interaction.reply(`Muted role set to ${role}`)
+//     }
+// }
 
 @Discord()
 @SlashGroup({
