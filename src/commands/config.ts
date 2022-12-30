@@ -78,10 +78,13 @@ export class manageableRoles {
         for (const manageableRole in manageableRoleParsed) {
             const managerRole = interaction.guild!.roles.cache.find((r) => r.id === manageableRole)
             const managerRoleRoles = `<@&${manageableRoleParsed[manageableRole].join('>, <@&')}>`
-            description += `__**${managerRole}:**__ ${managerRoleRoles}\n`
+            description += `__${managerRole}:__ ${managerRoleRoles}\n`
         }
 
-        interaction.reply({ content: `**Manager Roles**\n${description}`, ephemeral: true })
+        interaction.reply({
+            content: `__@manager:__ @manageable\n${description}`,
+            ephemeral: true
+        })
     }
 
     @Slash({ description: 'add or remove a manageable role' })
