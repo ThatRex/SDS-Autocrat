@@ -30,7 +30,7 @@ export class Move {
 
         interaction: CommandInteraction
     ) {
-        await interaction.deferReply()
+        await interaction.deferReply({ ephemeral: true })
 
         const member = interaction.member as GuildMember
         const channelFrom = member.voice.channel

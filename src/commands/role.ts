@@ -110,7 +110,8 @@ async function roleManage(
             : 'give'
 
     action === 'give' ? await user.roles.add(role) : await user.roles.remove(role)
-    return interaction.reply(
-        `Role, ${role} ${action === 'give' ? 'given to' : 'taken from'} ${user}`
-    )
+    return interaction.reply({
+        content: `Role, ${role} ${action === 'give' ? 'given to' : 'taken from'} ${user}`,
+        ephemeral: true
+    })
 }

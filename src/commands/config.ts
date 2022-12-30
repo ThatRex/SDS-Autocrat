@@ -42,7 +42,7 @@ export class config {}
 //             create: { guildId: interaction.guild!.id, mutedRoleId: role.id }
 //         })
 
-//         interaction.reply(`Muted role set to ${role}`)
+//         interaction.reply({ content: `Muted role set to ${role}`, ephemeral: true })
 //     }
 // }
 
@@ -85,7 +85,7 @@ export class manageableRoles {
                 value: `<@&${manageableRoleParsed[manageableRole].join('>, <@&')}>`
             })
 
-        interaction.reply({ embeds: [embed] })
+        interaction.reply({ embeds: [embed], ephemeral: true })
     }
 
     @Slash({ description: 'add a manageable role' })
@@ -118,7 +118,7 @@ export class manageableRoles {
                 throw Error(`${role} can already be managed by ${managerRole}`)
         }
 
-        interaction.reply(`${managerRole} can now manage ${role}`)
+        interaction.reply({ content: `${managerRole} can now manage ${role}`, ephemeral: true })
     }
 
     @Slash({ description: 'remove a manageable role' })
@@ -149,6 +149,9 @@ export class manageableRoles {
                 throw Error(`${role} is not manageable by ${managerRole}`)
         }
 
-        interaction.reply(`${managerRole} can no longer manage ${role}`)
+        interaction.reply({
+            content: `${managerRole} can no longer manage ${role}`,
+            ephemeral: true
+        })
     }
 }

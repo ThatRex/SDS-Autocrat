@@ -8,6 +8,9 @@ import { ErrorHandler } from '../guards/error.js'
 export class ping {
     @Slash({ description: 'ping' })
     ping(interaction: CommandInteraction) {
-        interaction.reply('pong')
+        interaction.reply({
+            content: 'Pong',
+            ephemeral: true
+        })
     }
 }

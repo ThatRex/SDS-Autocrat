@@ -61,7 +61,7 @@
 //         })
 
 //         await user.roles.set([mutedRoleId])
-//         interaction.reply(`${user} is now muted`)
+//         interaction.reply({ content: `${user} is now muted`, ephemeral: true })
 //     }
 // }
 
@@ -107,6 +107,6 @@
 
 //         const mutedMemberRoles = mutedMember ? mutedMember.userRoleIds.split(';') : []
 //         await user.roles.set(mutedMemberRoles)
-//         interaction.reply(`${user} is now unmuted`)
+//         interaction.reply({ content: `${user} is now unmuted`, ephemeral: true })
 //     }
 // }
