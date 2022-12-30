@@ -21,19 +21,27 @@ export class Move {
     async move(
         @SlashOption({
             description: 'voice channel to move to',
-            name: 'voice-channel',
+            name: 'voice-channel-to',
             required: true,
             type: ApplicationCommandOptionType.Channel,
             channelTypes: [ChannelType.GuildVoice]
         })
         channelTo: BaseGuildVoiceChannel,
 
+        @SlashOption({
+            description: 'voice channel to move from',
+            name: 'voice-channel-from',
+            type: ApplicationCommandOptionType.Channel,
+            channelTypes: [ChannelType.GuildVoice]
+        })
+        channelFrom: BaseGuildVoiceChannel,
+
         interaction: CommandInteraction
     ) {
         await interaction.deferReply({ ephemeral: true })
 
         const member = interaction.member as GuildMember
-        const channelFrom = member.voice.channel
+        channelFrom = channelFrom ?? member.voice.channel
 
         if (!channelFrom || !channelFrom.isVoiceBased())
             throw Error('You are not in a voice channel')
