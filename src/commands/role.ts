@@ -6,7 +6,7 @@ import {
     UserContextMenuCommandInteraction
 } from 'discord.js'
 import { ApplicationCommandOptionType } from 'discord.js'
-import { ContextMenu, Discord, Guard, Slash, SlashChoice, SlashGroup, SlashOption } from 'discordx'
+import { ContextMenu, Discord, Guard, Slash, SlashGroup, SlashOption } from 'discordx'
 import { PrismaClient } from '@prisma/client'
 import { ErrorHandler } from '../guards/error.js'
 import { NotBot } from '@discordx/utilities'
