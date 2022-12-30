@@ -20,7 +20,7 @@ export const bot = new Client({
         IntentsBitField.Flags.GuildVoiceStates
     ],
     // Debug logs are disabled in silent mode
-    silent: false // process.env.NODE_ENV === 'production'
+    silent: false
     // Configuration for @SimpleCommand
     // simpleCommand: {
     //   prefix: "s!",
