@@ -1,10 +1,9 @@
-import { CommandInteraction, Role, EmbedBuilder } from 'discord.js'
+import { CommandInteraction, Role } from 'discord.js'
 import { ApplicationCommandOptionType } from 'discord.js'
 import { Discord, Guard, Slash, SlashGroup, SlashOption } from 'discordx'
 import { PrismaClient } from '@prisma/client'
 import { ErrorHandler } from '../guards/error.js'
 import { NotBot } from '@discordx/utilities'
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/index.js'
 
 const prisma = new PrismaClient()
 
@@ -75,21 +74,18 @@ export class manageableRoles {
                 : [manageableRole.roleId]
         })
 
-        const embed = new EmbedBuilder().setColor('#d5152f').setTitle('Manager Roles')
+        let description = ''
+        for (const manageableRole in manageableRoleParsed) {
+            const managerRole = interaction.guild!.roles.cache.find((r) => r.id === manageableRole)
+            const managerRoleRoles = `<@&${manageableRoleParsed[manageableRole].join('>, <@&')}>`
+            description += `__**${managerRole}:**__ ${managerRoleRoles}\n`
+        }
 
-        for (const manageableRole in manageableRoleParsed)
-            embed.addFields({
-                name: `${
-                    interaction.guild!.roles.cache.find((r) => r.id === manageableRole)?.name
-                }`,
-                value: `<@&${manageableRoleParsed[manageableRole].join('>, <@&')}>`
-            })
-
-        interaction.reply({ embeds: [embed], ephemeral: true })
+        interaction.reply({ content: `**Manager Roles**\n${description}`, ephemeral: true })
     }
 
-    @Slash({ description: 'add a manageable role' })
-    async add(
+    @Slash({ description: 'add or remove a manageable role' })
+    async toggle(
         @SlashOption({
             name: 'role',
             description: 'role to be managed',
@@ -109,48 +105,23 @@ export class manageableRoles {
     ) {
         if (role.id === managerRole.id) throw Error(`Sorry, a role can't manage itself`)
 
+        let manageableRoleCreated = true
+
         try {
             await prisma.manageableRole.create({
                 data: { managerRoleId: managerRole.id, roleId: role.id }
             })
-        } catch (err) {
-            if (err instanceof PrismaClientKnownRequestError && err.code === 'P2002')
-                throw Error(`${role} can already be managed by ${managerRole}`)
-        }
-
-        interaction.reply({ content: `${managerRole} can now manage ${role}`, ephemeral: true })
-    }
-
-    @Slash({ description: 'remove a manageable role' })
-    async remove(
-        @SlashOption({
-            name: 'role',
-            description: 'role to be managed',
-            required: true,
-            type: ApplicationCommandOptionType.Role
-        })
-        role: Role,
-        @SlashOption({
-            name: 'manager-role',
-            description: 'manager role',
-            required: true,
-            type: ApplicationCommandOptionType.Role
-        })
-        managerRole: Role,
-
-        interaction: CommandInteraction
-    ) {
-        try {
+        } catch {
             await prisma.manageableRole.delete({
                 where: { roleId_managerRoleId: { managerRoleId: managerRole.id, roleId: role.id } }
             })
-        } catch (err) {
-            if (err instanceof PrismaClientKnownRequestError && err.code === 'P2002')
-                throw Error(`${role} is not manageable by ${managerRole}`)
+            manageableRoleCreated = false
         }
 
         interaction.reply({
-            content: `${managerRole} can no longer manage ${role}`,
+            content: `${managerRole} can ${
+                manageableRoleCreated ? 'now' : 'no longer'
+            } manage ${role}`,
             ephemeral: true
         })
     }
