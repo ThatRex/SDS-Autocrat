@@ -6,7 +6,7 @@ import {
     UserContextMenuCommandInteraction
 } from 'discord.js'
 import { ApplicationCommandOptionType } from 'discord.js'
-import { ContextMenu, Discord, Guard, Slash, SlashGroup, SlashOption } from 'discordx'
+import { ContextMenu, Discord, Guard, Slash, SlashChoice, SlashGroup, SlashOption } from 'discordx'
 import { PrismaClient } from '@prisma/client'
 import { ErrorHandler } from '../guards/error.js'
 import { NotBot } from '@discordx/utilities'
@@ -15,12 +15,12 @@ import { IsGuild } from '../guards/isGuild.js'
 const prisma = new PrismaClient()
 
 @Discord()
-@SlashGroup({ name: 'role', description: 'give or take a role', dmPermission: false })
+@SlashGroup({ name: 'role', description: 'manage roles', dmPermission: false })
 @SlashGroup('role')
 @Guard(ErrorHandler, NotBot, IsGuild)
 export class role {
-    @Slash({ description: 'give a role' })
-    async give(
+    @Slash({ name: 'toggle', description: 'give or take a role' })
+    async toggle(
         @SlashOption({
             name: 'member',
             description: 'member',
@@ -39,44 +39,18 @@ export class role {
 
         interaction: CommandInteraction
     ) {
-        await roleManage(interaction, 'give', role, user)
+        await roleManage(interaction, 'toggle', role, user)
     }
-    @Slash({ description: 'take a role' })
-    async take(
-        @SlashOption({
-            name: 'member',
-            description: 'member',
-            required: true,
-            type: ApplicationCommandOptionType.User
-        })
-        user: GuildMember,
 
-        @SlashOption({
-            name: 'role',
-            description: 'role',
-            required: true,
-            type: ApplicationCommandOptionType.Role
-        })
-        role: Role,
-
-        interaction: CommandInteraction
-    ) {
-        await roleManage(interaction, 'take', role, user)
-    }
-}
-
-@Discord()
-@Guard(ErrorHandler, NotBot, IsGuild)
-export class roleContext {
     @ContextMenu({
-        name: 'Toggle Calls Approved',
+        name: 'Toggle @Calls Approved',
         type: ApplicationCommandType.User,
         dmPermission: false,
         guilds: ['953475156309856256']
     })
-    async userHandler(interaction: UserContextMenuCommandInteraction) {
+    async toggleContextMenu(interaction: UserContextMenuCommandInteraction) {
         const role = interaction.guild!.roles.cache.get('1036651254211936256')
-        if (!role) return interaction.reply('Calls Approved role not found.')
+        if (!role) throw Error('Calls Approved role not found.')
         const member = interaction.targetMember as GuildMember
         await roleManage(interaction, 'toggle', role, member)
     }
