@@ -18,6 +18,10 @@ export const ErrorHandler: GuardFunction<CommandInteraction> = async (
         } else if (err instanceof Error) errorMessage = err.message
 
         console.error(`${interaction.commandName}: ${errorMessage}`)
-        interaction.reply({ content: errorMessage, ephemeral: true })
+        if (interaction.deferred) {
+            interaction.editReply({ content: errorMessage })
+        } else {
+            interaction.reply({ content: errorMessage, ephemeral: true })
+        }
     }
 }
