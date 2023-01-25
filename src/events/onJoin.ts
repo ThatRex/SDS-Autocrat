@@ -1,4 +1,4 @@
-import type { ArgsOf, Client } from 'discordx'
+import type { ArgsOf } from 'discordx'
 import { Discord, On } from 'discordx'
 
 @Discord()
