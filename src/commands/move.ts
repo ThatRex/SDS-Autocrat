@@ -15,8 +15,7 @@ export class Move {
     @Slash({
         description: 'move everyone from the channel you are in to another channel',
         name: 'move',
-        dmPermission: false,
-        defaultMemberPermissions: ['MoveMembers']
+        dmPermission: false
     })
     async move(
         @SlashOption({
@@ -43,6 +42,12 @@ export class Move {
         const member = interaction.member as GuildMember
         channelFrom = channelFrom ?? member.voice.channel
 
+        const canMoveMembers =
+            member.permissions.has('MoveMembers') ||
+            (channelFrom.permissionsFor(member).has('MoveMembers') &&
+                channelTo.permissionsFor(member).has('MoveMembers'))
+
+        if (!canMoveMembers) throw new Error("Sorry, you don't have permession to do that")
         if (!channelFrom || !channelFrom.isVoiceBased())
             throw Error('You are not in a voice channel')
         if (channelTo === channelFrom)
