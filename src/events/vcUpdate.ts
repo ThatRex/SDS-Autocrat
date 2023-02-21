@@ -2,15 +2,18 @@ import type { ArgsOf } from 'discordx'
 import { Discord, On } from 'discordx'
 
 @Discord()
-export class onJoin {
+export class vcUpdate {
     @On({ event: 'voiceStateUpdate' })
-    onJoin([oldState, newState]: ArgsOf<'voiceStateUpdate'>) {
-        // To bypass discord bug where users cant send messages in voice text chats (when moved in) unless they have "ViewChannel" permissions.
+    vcUpdate([oldState, newState]: ArgsOf<'voiceStateUpdate'>) {
+        // To bypass discord bug where users cant send messages or stream in voice text chats (when moved in) unless they have "ViewChannel" permissions.
         const member = oldState.member
         if (!member) return
 
         const channelTo = newState.channel
         const channelFrom = oldState.channel
+
+        // This event is also triggered when a user start & stops streaming making it seem that a user is moving between a single channel. This checks for that.
+        if (channelFrom === channelTo) return
 
         if (channelTo) {
             // Joining Channel
