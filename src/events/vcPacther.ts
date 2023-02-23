@@ -39,7 +39,7 @@ export class VcPacther {
                 const channel = channelFrom
 
                 const perms = channel.permissionsFor(member)
-                if (!perms.has('ViewChannel') && !perms.has('Connect')) return
+                if (!(perms.has('ViewChannel') && perms.has('Connect'))) return
 
                 const channelMemberOverwrite = channel.permissionOverwrites.cache.find(
                     (overwrite) => overwrite.id === member.id
@@ -47,8 +47,8 @@ export class VcPacther {
                 if (!channelMemberOverwrite) return
 
                 if (
-                    !channelMemberOverwrite.allow.has('ViewChannel') &&
-                    !channelMemberOverwrite.allow.has('Connect')
+                    !(channelMemberOverwrite.allow.has('ViewChannel') &&
+                    channelMemberOverwrite.allow.has('Connect'))
                 )
                     return
 
