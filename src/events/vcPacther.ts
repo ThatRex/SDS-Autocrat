@@ -13,7 +13,7 @@ export class VcPacther {
         const channelTo = newState.channel
         const channelFrom = oldState.channel
 
-        if (!member || channelFrom === channelTo || !(channelTo || channelFrom)) return
+        if (!member || channelFrom === channelTo) return
 
         if (channelTo)
             (() => {
