@@ -7,7 +7,7 @@ export class VcPacther {
     vcPacther([oldState, newState]: ArgsOf<'voiceStateUpdate'>) {
         //* This patches bug where users cant send messages or stream in voice text chats (when moved in) unless they have "ViewChannel" & "Connect" permissions
         //! `voiceStateUpdate` is also triggered when a user stop & starts streaming
-        //? To prevent this from adding & removing a channel members override either deny any perm or add any non "ViewChannel" or "Connect" perm 
+        //? To prevent this from adding & removing a channel members override either deny any perm or add any non "ViewChannel" or "Connect" perm
 
         const member = oldState.member
         const channelTo = newState.channel
@@ -26,11 +26,12 @@ export class VcPacther {
                 if (channelMemberOverwrite) return
 
                 const perms = channel.permissionsFor(member)
-                if (!perms.has('ViewChannel') || !perms.has('Connect'))
-                    channel.permissionOverwrites.create(member, {
-                        ViewChannel: true,
-                        Connect: true
-                    })
+                if (perms.has('ViewChannel') && perms.has('Connect')) return
+
+                channel.permissionOverwrites.create(member, {
+                    ViewChannel: true,
+                    Connect: true
+                })
             })()
 
         if (channelFrom)
@@ -47,8 +48,10 @@ export class VcPacther {
                 if (!channelMemberOverwrite) return
 
                 if (
-                    !(channelMemberOverwrite.allow.has('ViewChannel') &&
-                    channelMemberOverwrite.allow.has('Connect'))
+                    !(
+                        channelMemberOverwrite.allow.has('ViewChannel') &&
+                        channelMemberOverwrite.allow.has('Connect')
+                    )
                 )
                     return
 
